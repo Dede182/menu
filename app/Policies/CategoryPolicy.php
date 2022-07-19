@@ -75,6 +75,13 @@ class CategoryPolicy
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Auth\Access\Response|bool
      */
+    public function before(User $user){
+        if($user->role === "admin" ||   $user->role === "editor"){
+            return true;
+        };
+
+    }
+
     public function restore(User $user, Category $category)
     {
         //

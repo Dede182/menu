@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
+use App\Models\Photo;
 use App\Models\Category;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StorePostRequest;
-use App\Http\Requests\UpdatePostRequest;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate as Gate;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\UpdatePostRequest;
+use Illuminate\Support\Facades\Gate as Gate;
+
 class PostController extends Controller
 {
     /**
@@ -20,12 +23,16 @@ class PostController extends Controller
      */
     public function index(Request $request,Post $post)
     {
-        // return $request;
+        // return User::get('name');
         $posts = Post::
         when(request('keyword'),function($q){
             $keyword = request('keyword');
             $q->orWhere('title','like',"%$keyword%")
             ->orWhere('description','like',"%$keyword%");
+        })
+        ->When(request('mypost'),function($q){
+            $mypost= request('mypost');
+            $q->orWhere('user_id','=',"$mypost");
         })
         ->When(request('cid'),function($q){
             $categoryid= request('cid');
@@ -66,12 +73,35 @@ class PostController extends Controller
         $post->excerpt = Str::words($request->description,50,'....');
         $post->user_id = Auth::id();
         $post->category_id = $request->category;
+
+        // if($request->hasFile('featured_image')){
+        //     foreach($request->featured_image as $image){
+        //         $newname = uniqid()."_photos.".$image->extension();
+        //         $request->file('featured_image')->storeAs('public',$newname);
+        //         $post->featured_image = $newname;
+        //     }
+        // }
+
+
         if($request->hasFile('featured_image')){
             $newname = uniqid()."_featured_image.".$request->file('featured_image')->extension();
             $request->file('featured_image')->storeAs('public',$newname);
             $post->featured_image = $newname;
         }
+
         $post->save();
+        //saving photo
+        foreach($request->photos as $photo){
+            //save to storage
+            $newname = uniqid()."_photos.".$photo->extension();
+            $photo->storeAs('public',$newname);
+            //save to db
+            $photo = new Photo();
+            $photo->post_id = $post->id;
+            $photo->name = $newname;
+            $photo->save();
+        }
+
 
         return redirect()->route('post.index')->with('status',$post->title .' is added sccessfully');
     }
@@ -126,9 +156,23 @@ class PostController extends Controller
             $request->file('featured_image')->storeAs('public',$newname);
             $post->featured_image = $newname;
         }
+        // return $request;
         $post->save();
+        if($request->hasFile('photos')){
+             foreach($request->photos as $photo){
+            //save to storage
+            Storage::delete('public/',$photo);
+            $newname = uniqid()."_photos.".$photo->extension();
+            $photo->storeAs('public',$newname);
+            //save to db
+            $photo = new Photo();
+            $photo->post_id = $post->id;
+            $photo->name = $newname;
+            $photo->save();
+        }
+        }
 
-        return redirect()->route('post.index')->with('status',$post->title .' is updated succefully');
+        return redirect()->route('post.index')->with('status',$post->title .' is updated successfully');
     }
 
     /**
@@ -144,6 +188,7 @@ class PostController extends Controller
         }
         $postTitle = $post->title;
         Storage::delete($post->featured_image);
+        Storage::delete($post->photos);
         $post->delete();
         return redirect()->back()->with('status',$postTitle .' is deleted succefully');
         return redirect()->route('post.index')->with('status',$postTitle .' is deleted succefully');

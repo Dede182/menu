@@ -17,15 +17,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        User::factory()->create([
-            "name"=>"htet shine htwe",
-            "email"=>"htetshine.htetmkk@gmail.com",
-            "password"=>Hash::make('asdffdsa')
-        ]);
-
-        User::factory(10)->create();
 
         $this->call([
+            NationSeeder::class,
+            UserSeeder::class,
             CategorySeeder::class,
             PostSeeder::class
         ]);

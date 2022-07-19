@@ -38,6 +38,18 @@
             </div>
 
             <div class = "mb-3">
+                <label for="photos" class="form-label">Post Image</label>
+                <input type="file" id = "photos" class = "form-control @error('photos') is-invalid @enderror @error('photos.*') is-invalid @enderror" name = "photos[]" multiple>
+                @error('photos')
+                    <div class="invalid-feedback">{{$message}}</div>
+                @enderror
+                @error('photos.*')
+                    <div class="invalid-feedback">{{$message}}</div>
+                @enderror
+
+            </div>
+
+            <div class = "mb-3">
                      <label for="description" class="form-label">Post Description</label>
                      <textarea type="text" value="{{old('description')}}" rows = '10' id = "description" class = "form-control @error('description') is-invalid @enderror" name = "description"></textarea>
                       @error('description')
@@ -46,7 +58,7 @@
             </div>
            <div class="d-flex justify-content-between">
             <div class = "mb-0">
-                <label for="featured_image" class="form-label">Post Title</label>
+                <label for="featured_image" class="form-label">Featured Image</label>
                 <input type="file" id = "title" class = "form-control @error('featured_image') is-invalid @enderror" name = "featured_image">
                 @error('featured_image')
                     <div class="invalid-feedback">{{$message}}</div>

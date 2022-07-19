@@ -9,6 +9,7 @@
  <div class="card">
     <div class="card-body">
             <h4 class="d-inline">User list </h4><p class="d-inline text-muted"> result( {{$users->total()}} )</p>
+
             <div class="hr">
                 <div class="d-flex mb-3 justify-content-between align-items-center">
                     <div class="">
@@ -60,11 +61,19 @@
                                 <a class = "btn btn-outline-dark btn-sm" href="{{route('user.show',$user->id)}}">
                                     <i class="bi bi-info-circle my-1"></i>
                                 </a>
-                                @can('update',$user)
-                                    <a class = "btn btn-outline-dark btn-sm" href="{{route('user.edit',$user->id)}}">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                @endcan
+                                <form action="{{route('user.index')}}" method = "POST" >
+                                    <select type = "text" value = "{{old('userRole')}}" id = "formrole" class = "form-select @error('userRole')
+                                        is-invalid
+                                    @enderror" name = "role">
+
+                                        @foreach (\App\Models\User::all() as $user)
+                                        <option>{{$user->role}}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('userRole')
+                                     <div class="invalid-feedback">{{$message}}</div>
+                                      @enderror
+                                </form>
                                 @can('delete',$user)
                                     <form action="{{route('user.destroy',$user->id)}}" class="d-inline-block" method = "user">
                                         @csrf

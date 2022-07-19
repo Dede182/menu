@@ -17,7 +17,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::latest('id')->get();
+        $categories = Category::
+        When(Auth::user()->role === 'author',fn($q)=>$q->Where('user_id',Auth::id() ))
+        ->get();
         return view('category.index',compact('categories'));
     }
 
@@ -44,7 +46,7 @@ class CategoryController extends Controller
         $category->slug = Str::slug($request->title);
         $category->user_id = Auth::user()->id;
         $category->save();
-        return redirect()->route('category.index')->with('status',$category->title .' is sucessfully created');
+        return redirect()->route('category.index')->with('status',$category->title .' is successfully created');
     }
 
     /**
@@ -55,7 +57,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //
+        return $category->post->user;
     }
 
     /**

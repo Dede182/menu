@@ -9,11 +9,15 @@
  <div class="card">
     <div class="card-body">
             <h4 class="d-inline">Post list </h4><p class="d-inline text-muted"> result( {{$posts->total()}} )</p>
+            <form method="GET" class="mt-3" action="{{route('post.index',Auth::id())}}">
+                <button name = "mypost" value = {{Auth::id()}} class = "btn btn-outline-success btn-sm">My posts</button>
+                @csrf
+            </form>
             <div class="hr">
                 <div class="d-flex mb-3 justify-content-between align-items-center">
                     <div class="">
                         @if(request('keyword'))
-                         <p class="text-black-75 mb-1">Searched by : {{request('keyword')}}</p>
+                         <p class="text-black-75 mb-1 d-inline me-2">Searched by :</p><em><strong>{{request('keyword')}}</strong></em>
                          <a href="{{route('post.index')}}"><i class="bi bi-trash"></i></a>
 
                         @endif
@@ -38,7 +42,9 @@
                         <th>#</th>
                         <th>Title</th>
                         <th>Category</th>
+                        @if (Auth::user()->role != 'author')
                         <th>Owner</th>
+                        @endif
                         <th>Control</th>
                         <th>Craeted_at</th>
                     </tr>
@@ -51,11 +57,14 @@
                                 {{$post->title}}
                             </td>
                             <td>
-                                {{\App\Models\Category::find($post->category_id)->title}}
+                                {{$post->category->title}}
                             </td>
-                            <td>
-                                {{\App\Models\User::find($post->user_id)->name}}
-                            </td>
+                            @if (Auth::user()->role != 'author')
+                                <td>
+                                {{$post->user->name}}
+                                </td>
+                            @endif
+
                             <td>
                                 <a class = "btn btn-outline-dark btn-sm" href="{{route('post.show',$post->id)}}">
                                     <i class="bi bi-info-circle my-1"></i>

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
@@ -14,6 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
+        Gate::authorize('index',Auth::user());
         $users = User::when(request('keyword'),function($q){
             $keyword = request('keyword');
             $q->orWhere('name','like',"%$keyword%")
@@ -64,7 +67,8 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        Gate::authorize('update',$user);
+
     }
 
     /**
@@ -76,7 +80,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+
     }
 
     /**
@@ -87,6 +91,6 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        Gate::authorize('delete',$user);
     }
 }
