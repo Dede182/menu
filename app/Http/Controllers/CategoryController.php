@@ -18,7 +18,9 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::
-        When(Auth::user()->role === 'author',fn($q)=>$q->Where('user_id',Auth::id() ))
+        latest('id')
+        ->When(Auth::user()->role === 'author',fn($q)=>$q->Where('user_id',Auth::id() ))
+        ->with(['user'])
         ->get();
         return view('category.index',compact('categories'));
     }

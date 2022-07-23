@@ -11961,3 +11961,19 @@ textarea.form-control-lg {
 .adjustbtn {
   font-size: 0.65rem !important;
 }
+
+.s {
+  height: 70vh !important;
+  overflow-y: scroll;
+}
+
+.gallery {
+  -moz-columns: 3 120px;
+       columns: 3 120px;
+}
+
+.ci {
+  height: 200px;
+  -o-object-fit: contain;
+     object-fit: contain;
+}

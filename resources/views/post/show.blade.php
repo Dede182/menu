@@ -59,7 +59,10 @@
         </p>
         @isset($post->featured_image)
             <h4>Featured Image</h4>
-             <img class = "w-25 mt-3 shadow p-3 bg-white rounded" src="{{asset("storage/".$post->featured_image)}}" alt="">
+            <div class="d-flex justify-content-center">
+
+                <img class = "w-25 mt-3 shadow p-3 bg-white rounded" src="{{asset("storage/".$post->featured_image)}}" alt="">
+            </div>
 
            @endisset
         <hr>

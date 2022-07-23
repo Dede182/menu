@@ -16,7 +16,7 @@ class UserPolicy
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function before(User $user){
-        if($user->role == 'admin' || $user->role == "editor"){
+        if($user->role === 'admin' || $user->role === "editor"){
             return true;
         }
     }
@@ -46,7 +46,7 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        //
+
     }
 
     /**
@@ -70,7 +70,9 @@ class UserPolicy
      */
     public function delete(User $user, User $model)
     {
-        //
+        if($user->role === 'admin' || $user->role === "editor"){
+            return true;
+        }
     }
 
     /**

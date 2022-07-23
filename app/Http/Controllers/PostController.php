@@ -23,6 +23,7 @@ class PostController extends Controller
      */
     public function index(Request $request,Post $post)
     {
+
         // return User::get('name');
         $posts = Post::
         when(request('keyword'),function($q){
@@ -43,8 +44,10 @@ class PostController extends Controller
             $q->orWhere('user_id','=',"$userId");
         })
         ->latest('id')
+        ->with(['category','user'])
         ->paginate(10)->withQueryString();
         // return dd($posts);
+
         return  view('post.index',compact('posts'));
     }
 
@@ -93,7 +96,7 @@ class PostController extends Controller
         //saving photo
         foreach($request->photos as $photo){
             //save to storage
-            $newname = uniqid()."_photos.".$photo->extension();
+            $newname = uniqid()."_photo.".$photo->extension();
             $photo->storeAs('public',$newname);
             //save to db
             $photo = new Photo();
@@ -158,19 +161,21 @@ class PostController extends Controller
         }
         // return $request;
         $post->save();
+
         if($request->hasFile('photos')){
-             foreach($request->photos as $photo){
-            //save to storage
-            Storage::delete('public/',$photo);
-            $newname = uniqid()."_photos.".$photo->extension();
-            $photo->storeAs('public',$newname);
-            //save to db
-            $photo = new Photo();
-            $photo->post_id = $post->id;
-            $photo->name = $newname;
-            $photo->save();
+
+            foreach($request->photos as $photo){
+           //save to storage
+           $newname = uniqid()."_photo.".$photo->extension();
+           $photo->storeAs('public',$newname);
+           //save to db
+           $photo = new Photo();
+           $photo->post_id = $post->id;
+           $photo->name = $newname;
+           $photo->save();
+       }
         }
-        }
+
 
         return redirect()->route('post.index')->with('status',$post->title .' is updated successfully');
     }
@@ -187,10 +192,20 @@ class PostController extends Controller
             return abort('403','you are not allowed to delete');
         }
         $postTitle = $post->title;
-        Storage::delete($post->featured_image);
-        Storage::delete($post->photos);
+        // Storage::delete($post->featured_image);
+        // Storage::delete($post->photos);
+        if(isset($post->featured_image)){
+            Storage::delete('public/'.$post->featured_image);
+        }
+        foreach($post->photos as $photo){
+            Storage::delete('public/',$photo->name);
+
+            $photo->delete();
+        }
         $post->delete();
         return redirect()->back()->with('status',$postTitle .' is deleted succefully');
-        return redirect()->route('post.index')->with('status',$postTitle .' is deleted succefully');
+        // return redirect()->route('post.index')->with('status',$postTitle .' is deleted succefully');
     }
+
+
 }

@@ -61,23 +61,11 @@
                                 <a class = "btn btn-outline-dark btn-sm" href="{{route('user.show',$user->id)}}">
                                     <i class="bi bi-info-circle my-1"></i>
                                 </a>
-                                <form action="{{route('user.index')}}" method = "POST" >
-                                    <select type = "text" value = "{{old('userRole')}}" id = "formrole" class = "form-select @error('userRole')
-                                        is-invalid
-                                    @enderror" name = "role">
 
-                                        @foreach (\App\Models\User::all() as $user)
-                                        <option>{{$user->role}}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('userRole')
-                                     <div class="invalid-feedback">{{$message}}</div>
-                                      @enderror
-                                </form>
                                 @can('delete',$user)
-                                    <form action="{{route('user.destroy',$user->id)}}" class="d-inline-block" method = "user">
+                                    <form action="{{route('user.destroy',$user->id)}}" class="d-inline-block">
                                         @csrf
-                                        @method('delete')
+
                                         <button class="btn btn-outline-dark btn-sm"><i class="bi bi-trash"></i></button>
                                     </form>
                                 @endcan

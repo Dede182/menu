@@ -27,7 +27,7 @@
                         <tr>
                             <td>{{$category->id}}</td>
                             <td>
-                                {{$category->title}}
+                                {{$category->title}} <small class="text-muted"> ( {{$category->posts()->count()}} )</small>
                                 <br>
                                 <span class = "badge bg-secondary">{{$category->slug}} </span>
                             </td>

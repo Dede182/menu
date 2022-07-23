@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,15 +17,17 @@ class UserController extends Controller
      */
     public function index()
     {
+
         Gate::authorize('index',Auth::user());
         $users = User::when(request('keyword'),function($q){
             $keyword = request('keyword');
             $q->orWhere('name','like',"%$keyword%")
             ->orWhere('email','like',"%$keyword%");
         })
+        ->with([])
         ->orderBy('id','asc')
         ->paginate(10)->withQueryString();
-        return view('user.index',compact('users'));
+        return view('user.index',compact(['users']));
     }
 
     /**
@@ -34,7 +37,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -45,7 +48,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**
@@ -56,7 +59,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+            return $user;
     }
 
     /**
@@ -67,6 +70,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        return $user->id;
         Gate::authorize('update',$user);
 
     }
@@ -92,5 +96,9 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         Gate::authorize('delete',$user);
+
+        $userName = $user->name;
+        $user->delete();
+        return redirect()->back()->with('status',$userName . ' is removed');
     }
 }

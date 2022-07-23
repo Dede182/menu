@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
+use App\Models\User;
 use App\Models\Photo;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\StorePhotoRequest;
 use App\Http\Requests\UpdatePhotoRequest;
 
@@ -15,9 +18,13 @@ class PhotoController extends Controller
      */
     public function index()
     {
-        //
+        $photoss = Photo::
+        latest('id')
+        ->with(['post'])
+        ->paginate(20)
+        ->withQueryString();
+        return view('photo.index',compact('photoss'));
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -81,6 +88,11 @@ class PhotoController extends Controller
      */
     public function destroy(Photo $photo)
     {
-        //
+        //remove from storage
+        Storage::delete('public/',$photo->name);
+        //delete from db
+        $photo->delete();
+
+        return redirect()->back()->with('status','photo is deleted successfully');
     }
 }
