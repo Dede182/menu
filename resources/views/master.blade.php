@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/theme.css') }}" rel="stylesheet">
 </head>
 <body>
 
@@ -14,7 +14,7 @@
 
 
 
-    <script src = "{{ asset('js/app.js') }}">
+    <script src = "{{ asset('js/theme.js') }}">
     </script>
 </body>
 </html>

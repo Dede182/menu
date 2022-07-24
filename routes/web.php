@@ -28,7 +28,8 @@ Route::get('/', function () {
 
 Auth::routes();
 Route::get('/',[PageController::class,'index'])->name('page.index');
-Route::get('/detail/{id}',[PageController::class,'detail'])->name('page.detail');
+Route::get('/detail/{slug}',[PageController::class,'detail'])->name('page.detail');
+Route::get('/category/{slug}',[PageController::class,'postsByCategory'])->name('page.category');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/test',[HomeController::class,'test'])->name('test');
 Route::get('/san',[HomeController::class,'san']);

@@ -11,18 +11,27 @@
                                     {{ $post->category->title }}
                                 </span>
                             </a>
-                            <p class="card-text mb-2">{{ $post->description }}.</p>
+                            <div class="mt-2 d-flex justify-content-center">
+                                <div class="gal">
+                                    @foreach ($post->photos as $photo)
+                                     <img class="cii rounded shadow-lg me-2 mb-3 p-2 bg-white" height="100" src="{{ asset('storage/'.$photo->name) }}" alt="Card image cap">
+                                     @endforeach
+                                </div>
+
+                            </div>
+                            <p class="card-text my-2">{{ $post->description }}.</p>
 
                             <div class="d-flex align-items-center justify-content-between">
                                 <div class="">
                                    <p class="mb-0">{{ Str::ucfirst($post->user->name) }}</p>
                                 <p class="card-text">
-                                    <small class="text-muted">{{$post->created_at->diffInHours(\Carbon\Carbon::now()) }} hrs ago</small>
+                                    {{-- <small class="text-muted">{{$post->created_at->diffHuman(\Carbon\Carbon::now()) }} hrs ago</small> --}}
+                                    <small class="text-muted">{{$post->created_at->diffForHumans() }}</small>
                                 </p>
                                 </div>
 
 
-                                <a href="{{ route('page.detail',$post->id) }}" class="btn btn-primary">Detail</a>
+                                <a href="{{ route('page.index') }}" class="btn btn-primary">All posts</a>
                             </div>
                         </div>
                         </div>

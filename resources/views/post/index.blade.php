@@ -19,7 +19,6 @@
                         @if(request('keyword'))
                          <p class="text-black-75 mb-1 d-inline me-2">Searched by :</p><em><strong>{{request('keyword')}}</strong></em>
                          <a href="{{route('post.index')}}"><i class="bi bi-trash"></i></a>
-
                         @endif
                     </div>
                 <form method = "GET" action="{{route('post.index')}}">
